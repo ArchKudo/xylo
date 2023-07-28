@@ -14,7 +14,8 @@
 
 srun /bin/hostname
 
-MB=~/.config/bin/magicblast
+PATH="~/.config/bin:$PATH"
+PATH="~/.config/sratools/bin:$PATH"
 
 srun $MB -help
 

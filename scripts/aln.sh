@@ -17,11 +17,15 @@ srun pwd
 srun which fasterq-dump
 srun which bowtie2
 srun which parallel
+export TMPDIR=tmp
+srun ls $TMPDIR
 
+# Create required setup directories
 declare -a setup=(pairs tmp aln logs)
 mkdir -p "${setup[@]}"
 ls -R "${setup[@]}"
 
+# get fastq && align && delete fastq
 function align {
     echo "$0ing $1"
     fasterq-dump "${1}" --outdir pairs/ --temp tmp/ \
@@ -37,4 +41,4 @@ function align {
 
 export -f align
 
-srun parallel --joblog logs/parallel -j 4 -a runs align
+srun parallel --joblog logs/parallel --tmpdir $TMPDIR -j 4 -a runs align

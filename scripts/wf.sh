@@ -103,3 +103,54 @@ magicblast -sra ERX3229027 -db db/xylo -out out/aln.sam \
     -word_size 12 -penalty -2 -gapopen 5 -gapextend 2 -limit_lookup F
 
 bcftools mpileup -Ou --threads 12 -f xylo.fasta sort.bam | bcftools call --threads 12 -mv -Ob -o calls.bcf
+
+~/workplace/csm9060/archive/og
+.venv ❯ head -n 32 ERR3201409.fastq | awk 'NR % 4 == 0' | python ~/workplace/bio-playground/reads-utils/guess-encoding.py
+# reading qualities from STDIN
+Illumina-1.8    35      74 # Phred+33
+
+declare -a setup=(pairs tmp aln)
+mkdir -p "${setup[@]}"
+
+function align {
+    echo "$0ing $1"
+    fasterq-dump ${1} --outdir pairs/ --temp tmp/ \
+    --bufsize 10MB --curcache 100MB --mem 4000MB --threads 16 \
+    --progress --verbose --details --log-level debug && \
+    bowtie2 --threads 16 --time -x db/xylo \
+        -q --phred33 --local --very-sensitive-local --no-unal \
+        -N 1 -L 12 --rfg 5,2 \
+        -1 pairs/${1}_1.fastq -2 pairs/${1}_2.fastq -S aln/${1}.sam && \
+    rm -f pairs/${1}_{1,2}.fastq && \
+    echo "Aligned $1"
+}
+
+export -f align
+
+parallel --joblog tmp/parallel -j 16 -a runs align
+
+prefetch ${SRA} --output-directory data/ \
+    --verbose --progress \
+    --resume yes -L debug
+
+bowtie2-build xylo.fasta db/xylo
+
+mkdir -p {pairs,tmp,aln}
+
+declare -a eg=("SRR25637249" "SRR25637248" "SRR25637239" "SRR25637238" "SRR25637237" "SRR25637236" "SRR25637235" "SRR25637234" "SRR25637233" "SRR25637232" "SRR25637247" "SRR25637246" "SRR25637245" "SRR25637244" "SRR25637243" "SRR25637242" "SRR25637241" "SRR25637240")
+
+for RUN in "${eg[@]}"
+do
+    fasterq-dump ${RUN} --outdir pairs/ --temp tmp/ \
+        --bufsize 10MB --curcache 100MB --mem 4000MB --threads 16 \
+        --progress --verbose --details --log-level debug
+
+    bowtie2 --threads 16 --time -x db/xylo \
+        -q --phred33 --local --very-sensitive-local --no-unal \
+        -N 1 -L 12 --rfg 5,2 \
+        -1 pairs/${RUN}_1.fastq -2 pairs/${RUN}_2.fastq -S aln/${RUN}.sam
+done
+
+    # Explore further
+    # Match bonus/penalty
+    --ma 2 --mp

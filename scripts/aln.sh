@@ -1,10 +1,10 @@
 #!/bin/bash --login
 
-#SBATCH --job-name=magic
+#SBATCH --job-name=bowtie
 
-#SBATCH --output=logs/gdv.magic.out.%J
+#SBATCH --output=logs/gdv.bowtie.out.%J
 
-#SBATCH --error=logs/gdv.magic.err.%J
+#SBATCH --error=logs/gdv.bowtie.err.%J
 
 #SBATCH --ntasks=16
 
@@ -16,14 +16,22 @@ srun /bin/hostname
 
 srun pwd
 
-export TMPDIR=tmp
-srun ls $TMPDIR
+declare -a setup=(pairs tmp aln)
+mkdir -p "${setup[@]}"
 
-export MB=/impacs/gdv1/.config/bin/magicblast
-srun ls $MB
+function align {
+    echo "$0ing $1"
+    fasterq-dump ${1} --outdir pairs/ --temp tmp/ \
+    --bufsize 10MB --curcache 100MB --mem 4000MB --threads 16 \
+    --progress --verbose --details --log-level debug && \
+    bowtie2 --threads 16 --time -x db/xylo \
+        -q --phred33 --local --very-sensitive-local --no-unal \
+        -N 1 -L 12 --rfg 5,2 \
+        -1 pairs/${1}_1.fastq -2 pairs/${1}_2.fastq -S aln/${1}.sam && \
+    rm -f pairs/${1}_{1,2}.fastq && \
+    echo "Aligned $1"
+}
 
-srun $MB -help
+export -f align
 
-srun $MB -limit_lookup F -no_unaligned -outfmt sam \
-    -sra_batch sra -db db/xylo -out out/aln.sam \
-    -word_size 12 -penalty -2 -num_threads 16
+srun parallel --joblog tmp/parallel -j 16 -a runs align

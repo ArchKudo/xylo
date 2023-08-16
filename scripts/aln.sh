@@ -16,7 +16,7 @@ srun /bin/hostname
 
 srun pwd
 
-declare -a setup=(pairs tmp aln)
+declare -a setup=(pairs tmp aln logs)
 mkdir -p "${setup[@]}"
 ls -R "${setup[@]}"
 
@@ -36,4 +36,4 @@ function align {
 export -f align
 export parallel=/impacs/gdv1/.local/bin/parallel
 
-srun $parallel --joblog tmp/parallel -j 16 -a runs align
+srun $parallel --joblog logs/parallel -j 16 -a runs align

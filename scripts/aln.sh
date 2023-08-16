@@ -37,4 +37,4 @@ function align {
 
 export -f align
 
-srun parallel --joblog logs/parallel.%J -j 16 -a runs align
+srun parallel --joblog logs/parallel -j 4 -a runs align

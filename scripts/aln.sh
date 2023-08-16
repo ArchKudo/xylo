@@ -1,20 +1,24 @@
 #!/bin/bash --login
 
 #SBATCH --job-name=bowtie
-
 #SBATCH --output=logs/gdv.bowtie.out.%J
-
 #SBATCH --error=logs/gdv.bowtie.err.%J
 
-#SBATCH --ntasks=16
+#SBATCH --export=ALL,PATH="/impacs/gdv1/.local/bin:$PATH"
 
+#SBATCH --mail-type=ALL
 #SBATCH --mail-user=gdv1@aber.ac.uk
 
 #SBATCH --partition=cpusmall
+#SBATCH --ntasks=16
 
+# Setup checks
 srun /bin/hostname
-
+srun echo $PATH
 srun pwd
+srun which fasterq-dump
+srun which bowtie2
+srun which parallel
 
 declare -a setup=(pairs tmp aln logs)
 mkdir -p "${setup[@]}"
@@ -34,6 +38,5 @@ function align {
 }
 
 export -f align
-export parallel=/impacs/gdv1/.local/bin/parallel
 
-srun $parallel --joblog logs/parallel -j 16 -a runs align
+srun parallel --joblog logs/parallel -j 16 -a runs align

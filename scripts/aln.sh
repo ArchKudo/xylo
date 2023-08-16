@@ -18,6 +18,7 @@ srun pwd
 
 declare -a setup=(pairs tmp aln)
 mkdir -p "${setup[@]}"
+ls -R "${setup[@]}"
 
 function align {
     echo "$0ing $1"
@@ -33,5 +34,6 @@ function align {
 }
 
 export -f align
+export parallel=/impacs/gdv1/.local/bin/parallel
 
-srun parallel --joblog tmp/parallel -j 16 -a runs align
+srun $parallel --joblog tmp/parallel -j 16 -a runs align

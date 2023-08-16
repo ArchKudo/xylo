@@ -2,3 +2,4 @@ out/*
 gdv*
 tmp/*
 node_modules
+logs/*

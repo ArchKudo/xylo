@@ -4,8 +4,6 @@
 #SBATCH --output=logs/gdv.bowtie.out.%J
 #SBATCH --error=logs/gdv.bowtie.err.%J
 
-#SBATCH --export=ALL,PATH="/impacs/gdv1/.local/bin:$PATH"
-
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=gdv1@aber.ac.uk
 
@@ -39,4 +37,4 @@ function align {
 
 export -f align
 
-srun parallel --joblog logs/parallel -j 16 -a runs align
+srun parallel --joblog logs/parallel.%J -j 16 -a runs align

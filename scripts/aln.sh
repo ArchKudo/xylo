@@ -66,6 +66,6 @@ function align {
 
 export -f align
 
-run=$(sed -n "${SLURM_ARRAY_TASK_ID}"p runs)
-
-srun align "$run"
+srun parallel --joblog logs/parallel --tmpdir tmp/ \
+    --compress --keep-order --group \
+    --retries 3 --jobs 1 --arg-file runs align

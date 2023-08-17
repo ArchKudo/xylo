@@ -3,3 +3,4 @@ gdv*
 tmp/*
 node_modules
 logs/*
+data/*

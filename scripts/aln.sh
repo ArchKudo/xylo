@@ -9,6 +9,7 @@
 
 #SBATCH --partition=cpubig
 #SBATCH --ntasks=96
+#SBATCH --array=1-$(wc -l < runs)
 
 # Setup checks
 srun /bin/hostname
@@ -66,12 +67,6 @@ function align {
 
 export -f align
 
-function iter {
-    while IFS= read -r run; do
-        align "$run"
-    done < "$1"
-}
+run=$(sed -n "${SLURM_ARRAY_TASK_ID}"p runs)
 
-export -f iter
-
-srun iter ./runs
+srun align "$run"

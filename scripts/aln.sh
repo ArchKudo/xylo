@@ -66,6 +66,12 @@ function align {
 
 export -f align
 
-while IFS= read -r run; do
-    srun align "$run"
-done < runs
+function iter {
+    while IFS= read -r run; do
+        align "$run"
+    done < "$1"
+}
+
+export -f iter
+
+srun iter ./runs

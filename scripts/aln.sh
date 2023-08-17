@@ -7,8 +7,8 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=gdv1@aber.ac.uk
 
-#SBATCH --partition=cpusmall
-#SBATCH --ntasks=16
+#SBATCH --partition=cpubig
+#SBATCH --ntasks=96
 
 # Setup checks
 srun /bin/hostname
@@ -32,7 +32,7 @@ function align {
 
     # Dump fastq files
     if fasterq-dump "${1}" --outdir pairs/ --temp tmp/ \
-    --bufsize 10MB --curcache 100MB --mem 4000MB --threads 16 \
+    --bufsize 10MB --curcache 100MB --mem 16384MB --threads 96 \
     --progress --verbose --details --log-level debug;
         then
             echo "Downloaded fastq files for $1"
@@ -43,7 +43,7 @@ function align {
 
     # Run bowtie2 on downloaded files
     if [ -f "pairs/$1_1.fastq" ] && [ -f "pairs/$1_2.fastq" ]; then
-        if bowtie2 --threads 16 --time -x db/xylo \
+        if bowtie2 --threads 96 --time -x db/xylo \
             -q --phred33 --local --very-sensitive-local --no-unal \
             -N 1 -L 12 --rfg 5,2 \
             -1 "pairs/$1_1.fastq" -2 "pairs/$1_2.fastq" -S aln/"$1".sam;

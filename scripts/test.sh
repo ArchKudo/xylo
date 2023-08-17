@@ -15,13 +15,14 @@
 # srun echo "With srun $(/bin/hostname)"
 
 function align {
-	echo "Step 1: $1"
-	echo "Step 2: $1"
-	echo "Step 3: $3"
+    echo "Step 1: $1"
+    echo "Step 2: $1"
+    echo "Step 3: $1"
 }
 
 export -f align
 
-run=$(sed -n "${SLURM_ARRAY_TASK_ID}"p runs)
-
-align $run
+while IFS= read -r run; do
+    echo "Aligning for <> $run </>"
+    align "$run"
+done < ./runs

@@ -13,8 +13,6 @@
 # Create required setup directories
 declare -a setup=(data pairs aln logs tmp)
 mkdir -p "${setup[@]}"
-ls -R "${setup[@]}"
-
 # Setup checks
 /bin/hostname
 echo "$PATH"
@@ -80,5 +78,6 @@ function align {
 export -f align
 
 while IFS= read -r run; do
+    echo "<> $run </>"
     align "$run"
-done < runs
+done < ./runs

@@ -20,15 +20,17 @@ pwd
 which prefetch
 which fasterq-dump
 which bowtie2
+which parallel
 export TMPDIR=tmp
 echo $TMPDIR
 ls $TMPDIR
 
 # get fastq && align && delete fastq
 function align {
-    echo "Starting alignment for $1"
+    echo "Starting alignment for <>$1</>"
     
     # Download compressed sra files
+    # No exists check required thanks to resume
     if prefetch "$1" --output-directory data/ \
     --verbose --progress \
     --resume yes -L debug;
@@ -40,17 +42,23 @@ function align {
     fi
     
     # Dump fastq files from sra
-    if fasterq-dump "data/$1/$1.sra" --outdir pairs/ --temp tmp/ \
-    --bufsize 10MB --curcache 100MB --mem 4000MB --threads 96 \
-    --progress --verbose --details --log-level debug;
-    then
-        echo "Extracted fastq files for $1"
+    # Skip if file already exists
+    if [ ! -f "pairs/$1_1.fastq" ] && [ ! -f "pairs/$1_2.fastq" ]; then
+        if fasterq-dump "data/$1/$1.sra" --outdir pairs/ --temp tmp/ \
+        --bufsize 10MB --curcache 100MB --mem 4000MB --threads 96 \
+        --progress --verbose --details --log-level debug;
+        then
+            echo "Extracted fastq files for $1"
+        else
+            echo "Extraction failed for $1"
+            exit 1
+        fi
     else
-        echo "Extraction failed for $1"
-        exit 1
+        echo "Skipping extraction as file: $1_1.fastq & $1_2.fastq already exists"
     fi
     
     # Run bowtie2 on downloaded files
+    # Check if pairs exist
     if [ -f "pairs/$1_1.fastq" ] && [ -f "pairs/$1_2.fastq" ]; then
         if bowtie2 --threads 96 --time -x db/xylo \
         -q --phred33 --local --very-sensitive-local --no-unal \
@@ -77,7 +85,6 @@ function align {
 
 export -f align
 
-while IFS= read -r run; do
-    echo "<> $run </>"
-    align "$run"
-done < ./runs
+parallel --joblog logs/parallel --tmpdir tmp/ \
+--compress --keep-order --group \
+--retries 3 --jobs 12 --arg-file ./runs align

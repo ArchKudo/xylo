@@ -10,21 +10,22 @@
 #SBATCH --partition=cpubig
 #SBATCH --ntasks=96
 
+# Create required setup directories
+declare -a setup=(data pairs aln logs tmp)
+mkdir -p "${setup[@]}"
+ls -R "${setup[@]}"
+
 # Setup checks
 srun /bin/hostname
 srun echo "$PATH"
 srun pwd
+srun which prefetch
 srun which fasterq-dump
 srun which bowtie2
 srun which parallel
 export TMPDIR=tmp
 srun echo $TMPDIR
 srun ls $TMPDIR
-
-# Create required setup directories
-declare -a setup=(data pairs tmp aln logs)
-mkdir -p "${setup[@]}"
-ls -R "${setup[@]}"
 
 # get fastq && align && delete fastq
 function align {

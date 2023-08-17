@@ -16,16 +16,15 @@ mkdir -p "${setup[@]}"
 ls -R "${setup[@]}"
 
 # Setup checks
-srun /bin/hostname
-srun echo "$PATH"
-srun pwd
-srun which prefetch
-srun which fasterq-dump
-srun which bowtie2
-srun which parallel
+/bin/hostname
+echo "$PATH"
+pwd
+which prefetch
+which fasterq-dump
+which bowtie2
 export TMPDIR=tmp
-srun echo $TMPDIR
-srun ls $TMPDIR
+echo $TMPDIR
+ls $TMPDIR
 
 # get fastq && align && delete fastq
 function align {
@@ -79,7 +78,6 @@ function align {
 }
 
 export -f align
+run=run=$(sed -n "${SLURM_ARRAY_TASK_ID}"p runs)
 
-srun parallel --joblog logs/parallel --tmpdir tmp/ \
---compress --keep-order --group \
---retries 3 --jobs 1 --arg-file runs align
+align "$run"

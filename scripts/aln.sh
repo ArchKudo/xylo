@@ -66,6 +66,6 @@ function align {
 
 export -f align
 
-srun parallel --joblog logs/parallel --tmpdir tmp/ \
-    --compress --keep-order --group \
-    --retries 3 --jobs 2 --arg-file runs align
+while IFS= read -r run; do
+    srun align "$run"
+done < runs

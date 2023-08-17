@@ -9,7 +9,6 @@
 
 #SBATCH --partition=cpubig
 #SBATCH --ntasks=96
-#SBATCH --array=1-$(wc -l < runs)
 
 # Setup checks
 srun /bin/hostname

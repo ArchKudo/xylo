@@ -78,6 +78,7 @@ function align {
 }
 
 export -f align
-run=run=$(sed -n "${SLURM_ARRAY_TASK_ID}"p runs)
 
-align "$run"
+while IFS= read -r run; do
+    align "$run"
+done < runs

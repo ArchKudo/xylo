@@ -4,5 +4,4 @@ tmp/*
 node_modules
 logs/*
 data/*
-aln/*
 pairs/*

@@ -44,8 +44,9 @@ function align {
     # Dump fastq files from sra
     # Skip if file already exists
     if [ ! -f "pairs/$1_1.fastq" ] && [ ! -f "pairs/$1_2.fastq" ]; then
-        if fasterq-dump "data/$1/$1.sra" --outdir pairs/ --temp tmp/ \
-        --bufsize 10MB --curcache 100MB --mem 4000MB --threads 96 \
+        if fasterq-dump "data/$1/$1.sra" --outdir pairs/ \
+        --temp tmp/ --disk-limit-tmp 20480MB \
+        --bufsize 1024MB --curcache 1024MB --mem 16384MB --threads 96 \
         --progress --verbose --details --log-level debug;
         then
             echo "Extracted fastq files for $1"
@@ -85,6 +86,6 @@ function align {
 
 export -f align
 
-parallel --joblog logs/parallel --tmpdir tmp/ \
+parallel --joblog "logs/parallel.$SLURM_JOB_ID" --tmpdir tmp/ \
 --compress --keep-order --group \
---retries 3 --jobs 12 --arg-file ./runs align
+--retries 3 --jobs 10 --arg-file ./reduced align

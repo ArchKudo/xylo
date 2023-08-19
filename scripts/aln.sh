@@ -25,8 +25,27 @@ export TMPDIR=tmp
 echo $TMPDIR
 ls $TMPDIR
 
+function chkdsk {
+    local avl
+    avl=$(df -BG . | awk 'NR==2 {print $4}' | tr -d 'G')
+    if [ "$avl" -lt 100 ]; then
+        echo "Delaying execution of $1 as only ${avl}GB available"
+        while [ "$avl" -lt 100 ]; do
+            echo "Sleeping 10 minutes..."
+            sleep "10m"
+            avl=$(df -BG . | awk 'NR==2 {print $4}' | tr -d 'G')
+        done
+        echo "Resuming $1 as ${avl}GB now available"
+    fi
+}
+
+export -f chkdsk
+
 # get fastq && align && delete fastq
 function align {
+    # Check if enough disk space is avl before starting job
+    chkdsk "$1"
+    
     echo "Starting alignment for <>$1</>"
     
     # Download compressed sra files
@@ -44,8 +63,10 @@ function align {
     # Dump fastq files from sra
     # Skip if file already exists
     if [ ! -f "pairs/$1_1.fastq" ] && [ ! -f "pairs/$1_2.fastq" ]; then
+        # Check if space available for extracting more fastq files
+        chkdsk "$1"
         if fasterq-dump "data/$1/$1.sra" --outdir pairs/ --temp tmp/ \
-        --bufsize 100MB --curcache 500MB --mem 8192MB --threads 96 \
+        --bufsize 10MB --curcache 100MB --mem 4000MB --threads 96 \
         --progress --verbose --details --log-level debug;
         then
             echo "Extracted fastq files for $1"

@@ -66,7 +66,7 @@ function align {
         # Check if space available for extracting more fastq files
         chkdsk "$1"
         if fasterq-dump "data/$1/$1.sra" --outdir pairs/ --temp tmp/ \
-        --bufsize 10MB --curcache 100MB --mem 4000MB --threads 96 \
+        --bufsize 50MB --curcache 500MB --mem 5000MB --threads 96 \
         --progress --verbose --details --log-level debug;
         then
             echo "Extracted fastq files for $1"
@@ -108,4 +108,4 @@ export -f align
 
 parallel --joblog "logs/parallel.$SLURM_JOB_ID" --tmpdir tmp/ \
 --compress --keep-order --group \
---retries 3 --jobs 10 --arg-file ./reduced align
+--retries 3 --jobs 6 --arg-file ./reduced align

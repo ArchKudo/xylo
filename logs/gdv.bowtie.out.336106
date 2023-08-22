@@ -1,8 +1,0 @@
-cpu3.dcs.aber.ac.uk
-/impacs/gdv1/.local/bin:/impacs/gdv1/.local/bin:/opt/anaconda3/bin:/opt/anaconda3/condabin:~/.config/blast/bin:~/.config/sratools/bin:~/.config/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/cuda-11.5/bin:/usr/local/cuda-11.5/bin
-/impacs/gdv1/xylo
-/impacs/gdv1/.local/bin/prefetch
-/impacs/gdv1/.local/bin/fasterq-dump
-/impacs/gdv1/.local/bin/bowtie2
-/impacs/gdv1/.local/bin/parallel
-tmp

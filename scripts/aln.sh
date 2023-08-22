@@ -7,8 +7,8 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=gdv1@aber.ac.uk
 
-#SBATCH --partition=cpubig
-#SBATCH --ntasks=96
+#SBATCH --partition=cpusmall
+#SBATCH --ntasks=16
 
 # Create required setup directories
 declare -a setup=(data pairs aln logs tmp)
@@ -51,7 +51,7 @@ function align {
     # Download compressed sra files
     # No exists check required thanks to resume
     if prefetch "$1" --output-directory data/ \
-    --verbose --progress \
+    --verbose --progress --max-size 50G \
     --resume yes -L debug;
     then
         echo "Downloaded fastq files for $1"

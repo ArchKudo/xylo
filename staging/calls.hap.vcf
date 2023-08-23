@@ -1,0 +1,75 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##bcftoolsVersion=1.17-60-gb7b2a329+htslib-1.17-39-g7f69840
+##bcftoolsCommand=mpileup -Ou --threads 12 -f xylo.fasta dedup.bam
+##reference=file://xylo.fasta
+##contig=<ID=AB540108.1,length=2045>
+##contig=<ID=AF278715.1,length=1450>
+##contig=<ID=AY854501.1,length=1740>
+##contig=<ID=DQ665826.1,length=989>
+##contig=<ID=FJ763639.2,length=1077>
+##contig=<ID=FJ804147.1,length=975>
+##contig=<ID=HM769331.1,length=957>
+##contig=<ID=JF523203.1,length=972>
+##contig=<ID=JN631038.1,length=975>
+##contig=<ID=KC818626.1,length=957>
+##contig=<ID=KR611315.1,length=990>
+##contig=<ID=KR611316.1,length=990>
+##contig=<ID=KU170767.1,length=954>
+##contig=<ID=KU170768.1,length=954>
+##contig=<ID=KU170769.1,length=957>
+##contig=<ID=KU170770.1,length=957>
+##contig=<ID=KU170771.1,length=957>
+##contig=<ID=KU170772.1,length=957>
+##contig=<ID=KU170773.1,length=957>
+##contig=<ID=KU170774.1,length=957>
+##contig=<ID=KU170775.1,length=957>
+##contig=<ID=KU668555.1,length=957>
+##contig=<ID=KU668556.1,length=957>
+##contig=<ID=KU668557.1,length=957>
+##contig=<ID=L36993.1,length=1752>
+##contig=<ID=MF045434.1,length=1753>
+##contig=<ID=MF045435.1,length=1458>
+##contig=<ID=MF045436.1,length=1787>
+##contig=<ID=MF045437.1,length=2172>
+##contig=<ID=MK690391.1,length=975>
+##ALT=<ID=*,Description="Represents allele(s) other than observed.">
+##INFO=<ID=INDEL,Number=0,Type=Flag,Description="Indicates that the variant is an INDEL.">
+##INFO=<ID=IDV,Number=1,Type=Integer,Description="Maximum number of raw reads supporting an indel">
+##INFO=<ID=IMF,Number=1,Type=Float,Description="Maximum fraction of raw reads supporting an indel">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Raw read depth">
+##INFO=<ID=VDB,Number=1,Type=Float,Description="Variant Distance Bias for filtering splice-site artefacts in RNA-seq data (bigger is better)",Version="3">
+##INFO=<ID=RPBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Read Position Bias (closer to 0 is better)">
+##INFO=<ID=MQBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Mapping Quality Bias (closer to 0 is better)">
+##INFO=<ID=BQBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Base Quality Bias (closer to 0 is better)">
+##INFO=<ID=MQSBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Mapping Quality vs Strand Bias (closer to 0 is better)">
+##INFO=<ID=SCBZ,Number=1,Type=Float,Description="Mann-Whitney U-z test of Soft-Clip Length Bias (closer to 0 is better)">
+##INFO=<ID=SGB,Number=1,Type=Float,Description="Segregation based metric, http://samtools.github.io/bcftools/rd-SegBias.pdf">
+##INFO=<ID=MQ0F,Number=1,Type=Float,Description="Fraction of MQ0 reads (smaller is better)">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="List of Phred-scaled genotype likelihoods">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes for each ALT allele, in the same order as listed">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=DP4,Number=4,Type=Integer,Description="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases">
+##INFO=<ID=MQ,Number=1,Type=Integer,Description="Average mapping quality">
+##bcftools_callVersion=1.17-60-gb7b2a329+htslib-1.17-39-g7f69840
+##bcftools_callCommand=call --threads 12 -mv -Oz -o calls.hap.vcf; Date=Wed Aug 23 06:51:09 2023
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	dedup.bam
+AB540108.1	1579	.	C	A	11.7172	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=41	GT:PL	1/1:41,3,0
+AB540108.1	1620	.	C	T	11.7172	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=41	GT:PL	1/1:41,3,0
+AB540108.1	1662	.	G	A	4.38466	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,0,1;MQ=41	GT:PL	1/1:32,3,0
+AB540108.1	1672	.	A	G	11.7172	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,0,1;MQ=41	GT:PL	1/1:41,3,0
+AB540108.1	1686	.	T	C	11.7172	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,0,1;MQ=41	GT:PL	1/1:41,3,0
+AB540108.1	1711	.	T	C	11.7172	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,0,1;MQ=41	GT:PL	1/1:41,3,0
+AB540108.1	1736	.	T	A	8.13869	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,0,1;MQ=41	GT:PL	1/1:37,3,0
+AB540108.1	1760	.	T	C	11.7172	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,0,1;MQ=41	GT:PL	1/1:41,3,0
+AB540108.1	1773	.	T	C	11.7172	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,0,1;MQ=41	GT:PL	1/1:41,3,0
+AB540108.1	1775	.	C	T	11.7172	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,0,1;MQ=41	GT:PL	1/1:41,3,0
+MF045437.1	998	.	G	A	11.7172	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=44	GT:PL	1/1:41,3,0
+MF045437.1	1011	.	A	G	11.7172	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=44	GT:PL	1/1:41,3,0
+MF045437.1	1074	.	T	G	11.7172	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=44	GT:PL	1/1:41,3,0
+MF045437.1	1317	.	T	A	4.37511	.	DP=2;SGB=-0.379885;RPBZ=-1;MQBZ=0;MQSBZ=0;BQBZ=1;SCBZ=0;MQ0F=0;AC=1;AN=2;DP4=1,0,0,1;MQ=44	GT:PL	0/1:35,0,31
+MF045437.1	1349	.	T	G	5.5816	.	DP=2;SGB=-0.379885;RPBZ=-1;MQBZ=0;MQSBZ=0;BQBZ=1;SCBZ=0;MQ0F=0;AC=1;AN=2;DP4=1,0,0,1;MQ=44	GT:PL	0/1:35,0,6
+MF045437.1	1360	.	T	G	52.4146	.	DP=2;VDB=0.48;SGB=-0.453602;MQSBZ=0;MQ0F=0;AC=2;AN=2;DP4=0,0,1,1;MQ=44	GT:PL	1/1:82,6,0
+MF045437.1	1379	.	C	G	43.4147	.	DP=2;VDB=0.44;SGB=-0.453602;MQSBZ=0;MQ0F=0;AC=2;AN=2;DP4=0,0,1,1;MQ=44	GT:PL	1/1:73,6,0
+MF045437.1	1385	.	A	G	43.4147	.	DP=2;VDB=0.44;SGB=-0.453602;MQSBZ=0;MQ0F=0;AC=2;AN=2;DP4=0,0,1,1;MQ=44	GT:PL	1/1:73,6,0

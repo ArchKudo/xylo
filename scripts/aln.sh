@@ -7,8 +7,8 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=gdv1@aber.ac.uk
 
-#SBATCH --partition=cpubig
-#SBATCH --ntasks=96
+#SBATCH --partition=cpusmall
+#SBATCH --ntasks=16
 
 # Create required setup directories
 declare -a setup=(data pairs aln logs tmp)
@@ -51,7 +51,7 @@ function align {
     # Download compressed sra files
     # No exists check required thanks to resume
     if prefetch "$1" --output-directory data/ \
-    --verbose --progress \
+    --verbose --progress --max-size 50G \
     --resume yes -L debug;
     then
         echo "Downloaded fastq files for $1"
@@ -66,7 +66,7 @@ function align {
         # Check if space available for extracting more fastq files
         chkdsk "$1"
         if fasterq-dump "data/$1/$1.sra" --outdir pairs/ --temp tmp/ \
-        --bufsize 50MB --curcache 500MB --mem 5000MB --threads 96 \
+        --bufsize 50MB --curcache 500MB --mem 5000MB --threads 16 \
         --progress --verbose --details --log-level debug;
         then
             echo "Extracted fastq files for $1"
@@ -81,7 +81,7 @@ function align {
     # Run bowtie2 on downloaded files
     # Check if pairs exist
     if [ -f "pairs/$1_1.fastq" ] && [ -f "pairs/$1_2.fastq" ]; then
-        if bowtie2 --threads 96 --time -x db/xylo \
+        if bowtie2 --threads 16 --time -x db/xylo \
         -q --phred33 --local --very-sensitive-local --no-unal \
         -N 1 -L 12 --rfg 5,2 \
         -1 "pairs/$1_1.fastq" -2 "pairs/$1_2.fastq" -S aln/"$1".sam;

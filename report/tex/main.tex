@@ -17,6 +17,52 @@
 \usepackage{subfigure}
 \usepackage{ebgaramond}
 
+% Stolen from tax se
+
+% Drop later
+
+\usepackage{tokcycle}[2021-03-10]
+\usepackage{xcolor}
+\newcounter{wordcount}
+\newcounter{lettercount}
+\newcounter{wordlimit}
+\newif\ifinword
+% USER PARAMETERS
+\newif\ifrunningcount
+\newif\ifsummarycount
+\def\limitcolor{red}
+\setcounter{wordlimit}{0}
+%%
+\makeatletter
+% \tc@defx is like \def, but expands the replacement text once prior to assignment
+\newcommand\addtomacro[2]{\tc@defx#1{#1#2}}
+\newcommand\changecolor[1]{\tctestifx{.#1}{}{\addcytoks{\color{#1}{}}%
+  \tc@defx\currentcolor{#1}}}
+\makeatother
+\newcommand\dumpword{%
+  \addcytoks[1]{\accumword}%
+  \ifinword\stepcounter{wordcount}
+    \ifrunningcount\addcytoks[x]{$^{\thewordcount,\thelettercount}$}\fi
+    \ifnum\thewordcount=\value{wordlimit}\relax\changecolor{\limitcolor}\fi
+  \fi%
+  \inwordfalse
+  \def\accumword{}}
+\newcommand\addletter[1]{%
+  \tctestifcatnx A#1{\stepcounter{lettercount}\inwordtrue}{\dumpword}%
+  \addtomacro\accumword{#1}}
+\xtokcycleenvironment\countem
+  {\addletter{##1}}
+  {\dumpword\groupedcytoks{\processtoks{##1}\dumpword\expandafter}\expandafter
+    \changecolor\expandafter{\currentcolor}}
+  {\dumpword\addcytoks{##1}}
+  {\dumpword\addcytoks{##1}}
+  {\stripgroupingtrue\def\accumword{}\def\currentcolor{.}
+    \setcounter{wordcount}{0}\setcounter{lettercount}{0}}
+  {\dumpword\ifsummarycount\tcafterenv{%
+    \par(Wordcount=\thewordcount, Lettercount=\thelettercount)}\fi}
+
+% Drop later
+
 \usepackage{authordate1-4} % Use this to get Harvard/author-date style referencing
 
 % Include the nolof and/or nolot option for no lists of figures and
@@ -67,20 +113,22 @@
   % - [x] Xylose reductase
   % - [x] Biotech production
   % - [x] Metagenomes
-  % - Hungate
+  % - [x] Hungate
   % - [x] Recovering haplotypes using Hansel\&Gretel
-  % - [x] Using protT5 embedding
+  % - [ ] Using protT5 embedding
   % - [x] Source code
 
   % TODO Grammarly
 
-  \textbf{Motivation}: Xylitol is an alditol which can be used as food substitute to sugar but with only 40\% the calories. It is currently mass produced by conversion of purified xylose obtained from raw biomass materials using the process of catalytic hydrogenation using Raney Nickel. This process consumes high energy, producing chemical byproducts and hence an eco-friendly industrial fermentation method is preferred. However there is a need to find and engineer enzymes like the xylose reductase gene from Candida Tropicalis to increase yield and make industrial fermentation economically viable. This research proposes analyzing the complex microbial fermentation community present in the rumen of ruminants like cattle using metagenomics.\\
+  \countem
+
+  \textbf{Motivation}: Xylitol is a~~n alditol which can be used as~~ food substitute to sugar but with only 40\% the calories. It is currently mass produced by conversion of purified xylose obtained from raw biomass materials by the process of catalytic hydrogenation using Raney Nickel. This process consumes high energy, producing chemical byproducts and hence an eco-friendly industrial fermentation method is preferred. However there is a need to find and engineer enzymes like the xylose reductase gene from Candida Tropicalis to increase yield and make it economically viable. This research proposes analyzing the complex microbial fermentation community present in the rumen of ruminants like cattle using metagenomics.\\
   \textbf{Scope}: In this research we investigate variation in Xylose Reductase (XYL1) gene, how they align to the Hungate cattle rumen metagenome project, and compare their protein embedding space.\\
   \textbf{Results}: 240 Illumina HiSeq 4000 (TODO verify) were aligned to 30 XYL1 genes using bowtie2 alignment tool to recover 1047 reads. This along with their variants were passed to the python package Gretel for recovering the complete set of genetic variants called the ``haplotype" although in this instance the results were unfavourable and lack of variants made it unable to recover the complete haplotype.\\
   \textbf{Availability}: The reference workflow run on Slurm HPC, the aligned reads, variants, the output of running the Gretel algorithm for attempting to recovering the haplotypes (TODO prott5) is available as an MPL-2.0 licensed Git repository at https://github.com/ArchKudo/xylo
 
-
-
+  \endcountem
+  (\thewordcount{} words and \thelettercount{} letters)
 
   \prefacesection{Declaration of originality}
 
@@ -135,16 +183,35 @@
 % Your thesis goes here!
 \chapter{Introduction}
 
-Background to the project, motivation, leading to project aims and objectives.
-\begin{itemize}
-  \item What problem was tackled?
-  \item Why was that problem tackled?
-  \item How (in outline) was the problem tackled?
-  \item Clear statement of project aim and objectives.
-  \item Guide to subsequent chapters.
-\end{itemize}
+\countem
+% ~3000 words
+
+- [ ] Background to the project,
+- [ ] xylitol production
+- [ ] metagenomes
+- [ ] chromosome, allele, haplotypes, ploidy
+- [ ] haplotype algorithms
+- [ ] hungate
+- [ ] motivation
+- [ ]
+- [ ] leading to project aims and objectives.
+- [ ] What problem was tackled?
+- [ ] Why was that problem tackled?
+- [ ] How (in outline) was the problem tackled?
+- [ ] alignment
+- [ ] variant calling
+- [ ] gretel
+- [ ] prott5
+- [ ] Clear statement of project aim and objectives.
+- [ ] Guide to subsequent chapters.
+
+\endcountem
+(\thewordcount{} words and \thelettercount{} letters)
 
 \chapter{Literature review}
+
+\countem
+% ~4000 words
 
 The literature review is all about the related knowledge that you are building on.  Similar products and related research are usual.
 
@@ -157,10 +224,29 @@ Refereed articles are generally considered to have the greatest authority, but f
 
 When you cite a web source, make sure to include the date of access.
 
+\endcountem
+(\thewordcount{} words and \thelettercount{} letters)
+
 \chapter{Reporting on the project -- the core chapters}
 
+\countem
+% ~5000 words
+
 Reporting on the project will normally require more than one chapter.
-A development project is likely to have chapters addressing requirements, design, implementation, testing and packaging if a plan-driven method is used.  If an agile approach is taking, you might have a chapter for each sprint or iteration.
+A development project is likely to have chapters addressing
+- [ ] requirements,
+- [ ] design,
+- [ ] implementation,
+- [ ] testing and
+- [ ] packaging if a plan-driven method is used.  If an agile approach is taking, you might have a chapter for
+- [ ] each sprint or iteration.
+- [ ] file formats
+- [ ] choice of tools
+- [ ] wall time optimization
+- [ ] positive control?
+- [ ] descriptive analysis
+- [ ] Quality control
+- [ ] embedding space
 Other kinds of project will have chapters that are appropriate to the project in question.
 
 You are likely to include diagrams or images in your core chapters.
@@ -173,7 +259,19 @@ You are likely to include diagrams or images in your core chapters.
 %   \end{center}
 % \end{figure}
 
+\endcountem
+(\thewordcount{} words and \thelettercount{} letters)
+
 \chapter{Critical Evaluation}
+
+\countem
+% ~2000 words
+
+- [ ] Alternative datasets
+- [ ] Statistics
+- [ ] Why no haplotypes recovered
+- [ ] Reflection
+
 
 In this chapter (it won’t be chapter 4, but probably chapter 6 or 7 once all the core chapters have been added.)
 
@@ -183,12 +281,23 @@ It shows that you can not only carry out a substantial piece of work, but that y
 
 Examiners view the critical evaluation as very important.
 
+\endcountem
+(\thewordcount{} words and \thelettercount{} letters)
+
 \chapter{Conclusion}
+
+\countem
+% ~500 words
 
 A brief summary of all that has gone before.
 
 May include some directions for future work.
 
+
+\endcountem
+(\thewordcount{} words and \thelettercount{} letters)
+
+% ~14.5k total
 
 \bibliographystyle{ieee}
 \bibliography{mybib}  % Pathname of your bibTeX file

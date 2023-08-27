@@ -170,3 +170,5 @@ done
 # Get sequence
 
 awk -v name="AB540108.1" -v RS='>' '$1 == name {print ">" $0}' xylo.fasta
+
+esearch -db gene -query "xylose reductase" | efetch -format docsum | xtract -pattern DocumentSummary -element Id | while read -r gene_id; do efetch -db nucleotide -id "$gene_id" -format fasta; done >> xylo.fna

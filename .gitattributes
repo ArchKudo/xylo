@@ -1,1 +1,7 @@
 xylo.fna filter=lfs diff=lfs merge=lfs -text
+db/xylo.rev.2.bt2 filter=lfs diff=lfs merge=lfs -text
+db/xylo.1.bt2 filter=lfs diff=lfs merge=lfs -text
+db/xylo.2.bt2 filter=lfs diff=lfs merge=lfs -text
+db/xylo.3.bt2 filter=lfs diff=lfs merge=lfs -text
+db/xylo.4.bt2 filter=lfs diff=lfs merge=lfs -text
+db/xylo.rev.1.bt2 filter=lfs diff=lfs merge=lfs -text

@@ -108,4 +108,4 @@ export -f align
 
 parallel --joblog "logs/parallel.$SLURM_JOB_ID" --tmpdir tmp/ \
 --compress --keep-order --group \
---retries 3 --jobs 6 --arg-file ./reduced align
+--retries 3 --jobs 8 --arg-file ./reduced align

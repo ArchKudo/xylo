@@ -16,6 +16,7 @@
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{ebgaramond}
+% \usepackage[none]{hyphenat}
 
 % Stolen from tax se
 
@@ -120,15 +121,15 @@
 
   % TODO Grammarly
 
-  \countem
+\countem
 
   \textbf{Motivation}: Xylitol is a~~n alditol which can be used as~~ food substitute to sugar but with only 40\% the calories. It is currently mass produced by conversion of purified xylose obtained from raw biomass materials by the process of catalytic hydrogenation using Raney Nickel. This process consumes high energy, producing chemical byproducts and hence an eco-friendly industrial fermentation method is preferred. However there is a need to find and engineer enzymes like the xylose reductase gene from Candida Tropicalis to increase yield and make it economically viable. This research proposes analyzing the complex microbial fermentation community present in the rumen of ruminants like cattle using metagenomics.\\
   \textbf{Scope}: In this research we investigate variation in Xylose Reductase (XYL1) gene, how they align to the Hungate cattle rumen metagenome project, and compare their protein embedding space.\\
   \textbf{Results}: 240 Illumina HiSeq 4000 (TODO verify) were aligned to 30 XYL1 genes using bowtie2 alignment tool to recover 1047 reads. This along with their variants were passed to the python package Gretel for recovering the complete set of genetic variants called the ``haplotype" although in this instance the results were unfavourable and lack of variants made it unable to recover the complete haplotype.\\
   \textbf{Availability}: The reference workflow run on Slurm HPC, the aligned reads, variants, the output of running the Gretel algorithm for attempting to recovering the haplotypes (TODO prott5) is available as an MPL-2.0 licensed Git repository at https://github.com/ArchKudo/xylo
 
-  \endcountem
-  (\thewordcount{} words and \thelettercount{} letters)
+\endcountem
+(\thewordcount{} words and \thelettercount{} letters)
 
   \prefacesection{Declaration of originality}
 
@@ -186,24 +187,80 @@
 \countem
 % ~3000 words
 
-- [ ] Background to the project,
-- [ ] xylitol production
-- [ ] metagenomes
-- [ ] chromosome, allele, haplotypes, ploidy
-- [ ] haplotype algorithms
-- [ ] hungate
-- [ ] motivation
-- [ ]
-- [ ] leading to project aims and objectives.
-- [ ] What problem was tackled?
-- [ ] Why was that problem tackled?
-- [ ] How (in outline) was the problem tackled?
-- [ ] alignment
-- [ ] variant calling
-- [ ] gretel
-- [ ] prott5
-- [ ] Clear statement of project aim and objectives.
-- [ ] Guide to subsequent chapters.
+
+% - [ ] Background to the project,
+%     - [x] Fermentation
+%     - [ ] Enzyme
+%     - [ ] Directed Evolution
+%     - [ ] xylitol production
+        % - [x] chemical production
+        % - [x] biological production
+%     - [ ] metagenomes
+%         - [ ] chromosome, allele, haplotypes, ploidy
+%         - [ ] haplotype algorithms
+%         - [ ] hungate
+%     - [ ]
+
+\section{Background}
+
+% Rewritten
+
+% [1] Y. Xu, P. Chi, M. Bilal, and H. Cheng, “Biosynthetic strategies to produce xylitol: an economical venture,” Appl Microbiol Biotechnol, vol. 103, no. 13, pp. 5143–5160, Jul. 2019, doi: 10.1007/s00253-019-09881-1.
+
+% [2] D. Dodd, R. I. Mackie, and I. K. O. Cann, “Xylan degradation, a metabolic property shared by rumen and human colonic Bacteroidetes,” Molecular Microbiology, vol. 79, no. 2, pp. 292–304, 2011, doi: 10.1111/j.1365-2958.2010.07473.x.
+
+% [3] D. Umai, R. Kayalvizhi, V. Kumar, and S. Jacob, “Xylitol: Bioproduction and Applications-A Review,” Frontiers in Sustainability, vol. 3, 2022, Accessed: Jul. 25, 2023. [Online]. Available: https://www.frontiersin.org/articles/10.3389/frsus.2022.826190
+
+% What is Xylitol and advantages
+% Hard words parenteral fibrinogen
+
+Xylitol is a naturally occurring sugar-substitute with with various applications in the pharmaceutical and food industry. It is a five carbon sugar alcohol (alditol) with chemical formula $C_5H_{12}O_5$. The measure of sweetness of Xylitol is comparable to sugar yet boasts only 40\% the calories with ~2.4 calories/gram calorific content compared to sucrose/glucose sugars at 4.0 calories/gram. Having been know since the 1890's to organic chemists, it wasn't until 1975 when the company Finnish Sugar Co. Ltd. started its mass production due to dicovery of it insulin independent metabolic regulation. Making it very appealing to patients with diabetes for preventing irregular blood sugar level spikes. While also boasting anti-carcinogenic and anti-inflammatory properties and used for treatment of osteoporosis, ear infections, and dental care for tooth rehardening and remineralizaiton. Other various benefits include its inertness to amino acids making it suitable for intravenous parenteral nutrition and as a stabilizing agent for proteins extracted from cell membranes and fibrinogen pastes in the human plasma. Lastly, it has also seen adoption in the food industry particularly for manufacturing confectionary, due to its endothermic cooling effect (34.8 calories/gram), its flexibility in improving texture, and preserving nutrition of food proteins. Despite having some shortcomings like having a laxative effect on consumption of more than the 15 grams/day prescribed limit by FDA, Department of Energy (DOE) deservingly recognizes Xylitol as "Top value-added" biomass chemical utilizing fermentation of abandoned plants.
+
+% Add xylose v/s sucrose infographic
+
+% Natural limited sources
+% Hard words: D-mannitol, D-sorbitol, hemicellulosic, lignocellulose
+
+Similar to other sugar substitutes like D-mannitol, D-sorbitol, Xylitol is produced in small quantities by fruit plants, vegetables, hardwood trees, as well in husks and stalks of plants. Animals including humans also produce xylitol as a part of glucose metabolism, where adult humans may produce upto 15 grams of xylitol each day. However most available sources have limited extraction capability except hemicellulosic vegetation primarily birchwood and corn-cob along with some other flora which is chemically processed to separate the lignocellulose containing xylans (xylose and arabinose).
+
+% Add xylan structure diagram
+
+% Current xylitol production methods
+% Hard words: interchain linkage, hydrolysis, monomeric, hydrolyzate, hydrogenation, chromatography
+Originating in Finland, hemicellulose is pretreated with dilute acids to break the interchain linkage by the process of acid hydrolysis reduction to get monomeric sugars. The hydrolyzate is purified to get D-Xylose. It is followed by raney nickel catalyzed hydrogenation at a pressure of 8-10 MPascals temperature of $80^{\circ}$ to $140^{\circ}$ celsius to produce Xylitol. Finally, Xylitol is itself purified and crystallized with a conversion yield of 50-60\% from the hydrolyzate. Although, this yield has improved over the years by using pretreatment methods like 1\% sulphuric acid at $120^{\circ}$ celsius to extract 99\% of the xylose additionally, with the use of better catalysts such as using noble metal like Ruthenium, or non-noble like cobalt and silica. However the dependence of chemicals on synthesis is unsustainable due to the high energy requirements, as well as the use of expensive and potentially toxic metals makes the process ecologically unsafe and requires complex chromatography and recrystrallization to remove impurities prone to contamination and safety issues. Thus there is a growing interest for a high yield and environmentally friendly biological fermentation alternative for Xylitol production.
+
+% Fermentation
+% Hard words: Pichia stipitis, xylose reductase, gene encoding, acetyl groups, phosphorylated, nadph, enzyme
+% Add pentose phospate pathway diagram
+
+Biotechnological conversion of xylose to xylitol was first reported using Saccharomyces cerevisiae (yeast) with modified Pichia stipitis' (CBS 6054) xylose reductase (XR, EC 1.1.1.307) gene encoding. Not only did it have higher yield than regular yeast strains, bioconversion requires a simple fermentation process with reduced temperature and pressure requirements and lack metal debris impurities facilitating easier purification. In general the bioconversion of xylose happens in the presence of enzyme xylose reductase which converts xylose to xylitol. Hemicellulose fraction itself doesn't need to be hydrolyzed using chemical methods and can undergo autohydrolysis at a temperature around $200^{\circ}$ celsius where the acetyl groups get hydrolyzed and break the bonds. However, conversion of xylose using modified micro-organisms is governed by the pentose phosphate metabolic pathway. Yeast and fungi in this pathway convert xylose to xylitol however, if it isn't secreted from the cell it is converted into xylulose due to oxidation by xylitol dehydrogenase which gets further phosphorylated by the presence of xylokinase. To prevent this continous supply of NADPH/NADH is required as opposed to NADP/NAD. The conversion may also be intervened by the presence of xylose isomerase which directly converts xylose to unwanted xylulose. Recent developments allow improving this, by using only the enzyme xylose reductase (XR) instead of whole cells of micro-organisms and can thus theoretically achieve 100\% yield.
+
+
+
+
+
+
+
+
+
+% - [ ] motivation
+%     - [ ]
+% - [ ] leading to project aims and objectives.
+% - [ ] What problem was tackled?
+% - [ ] Why was that problem tackled?
+
+% - [ ] Clear statement of project aim and objectives.
+\section{Aim}
+
+% - [ ] How (in outline) was the problem tackled?
+%     - [ ] alignment
+%     - [ ] variant calling
+%     - [ ] gretel
+%     - [ ] prott5
+
+\section{Solution}
+
+% - [ ] Guide to subsequent chapters.
 
 \endcountem
 (\thewordcount{} words and \thelettercount{} letters)
@@ -300,6 +357,6 @@ May include some directions for future work.
 % ~14.5k total
 
 \bibliographystyle{ieee}
-\bibliography{mybib}  % Pathname of your bibTeX file
+\bibliography{main}  % Pathname of your bibTeX file
 
 \end{document}

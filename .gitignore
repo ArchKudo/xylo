@@ -5,6 +5,7 @@ node_modules
 logs/*
 data/*
 pairs/*
+staging/*
 .DS_Store
 __latexindent_temp.tex
 *.aux

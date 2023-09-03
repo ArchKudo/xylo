@@ -172,3 +172,32 @@ done
 awk -v name="AB540108.1" -v RS='>' '$1 == name {print ">" $0}' xylo.fasta
 
 esearch -db gene -query "xylose reductase" | efetch -format docsum | xtract -pattern DocumentSummary -element Id | while read -r gene_id; do efetch -db nucleotide -id "$gene_id" -format fasta; done >> xylo.fna
+
+awk -v n=2 '/^>/ {if (seq) print desc ORS seq; seq=""; desc=$0} /^[^>]/ {seq = seq $0} NR==n {print desc ORS seq; exit} END {if (seq) print desc ORS seq}' your.fasta
+
+# Staging
+java -jar ~/workplace/downloads/picard.jar MergeSamFiles \
+$(find ../aln -maxdepth 1 -type f -name "*.sam" -printf "-I %p ") \
+-O "aln.sam"
+
+source ~/workplace/csm9060/.venv/bin/activate
+
+samtools view -@ 12 --verbosity 100 -b aln.sam -o aln.bam
+
+samtools sort -m 512M --threads 12 --verbosity 100 -o sort.bam aln.bam
+
+java -jar ~/workplace/downloads/picard.jar MarkDuplicates \
+INPUT=sort.bam \
+OUTPUT=dedup.bam \
+METRICS_FILE=dedup.metrics
+
+samtools index dedup.bam
+
+bcftools mpileup -Ou --threads 12 -f ../xylo.fasta dedup.bam | bcftools call --threads 12 -mv -Oz -o calls.vcf
+
+# TODO: Use for loop to iterate to all contigs found by bcftools
+python ../scripts/snpper.py -b dedup.bam -r EU273285.1 > EU273285.1.vcf
+bgzip -k -@ 12 EU273285.1.vcf
+tabix EU273285.1.vcf.gz
+gretel dedup.bam EU273285.1.vcf.gz EU273285.1 --master ../xylo.fasta
+# gretel dedup.bam EU273285.1.vcf.gz EU273285.1 -s 150 -e 250 --master ../xylo.fasta

@@ -201,3 +201,14 @@ bgzip -k -@ 12 EU273285.1.vcf
 tabix EU273285.1.vcf.gz
 gretel dedup.bam EU273285.1.vcf.gz EU273285.1 --master ../xylo.fasta
 # gretel dedup.bam EU273285.1.vcf.gz EU273285.1 -s 150 -e 250 --master ../xylo.fasta
+
+
+# Watch slurm job progress
+# Check folder size
+watch -n 1 du -sh *
+# Find how many alignments have been completed
+watch -n 120 'ls aln | wc -l; ls data | wc -l; ls pairs | wc -l'
+# Check available disk usage
+watch -n 10 df -h /home
+# CPU, mem, rss usage (Requires unallocated threads to run)
+watch -n 2 srun -p cpubig --nodelist=cpu3.dcs.aber.ac.uk -l top -b -n 1 -u gdv1 | head -n 15

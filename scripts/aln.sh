@@ -12,44 +12,46 @@
 
 # Create required setup directories
 declare -a setup=(data pairs aln logs tmp)
-mkdir -p "${setup[@]}"
+mkdir -p "${setup[@]}" #creates directories listed in setup array
 # Setup checks
-/bin/hostname
-echo "$PATH"
-pwd
-which prefetch
-which fasterq-dump
-which bowtie2
-which parallel
-export TMPDIR=tmp
-echo $TMPDIR
-ls $TMPDIR
+/bin/hostname         #adds line of text to logfile to state which slurm node sbatch was run on
+echo "$PATH"         #adds all directories in PATH to logfile
+pwd                   #adds current directory to logfile
+which prefetch         #adds binary path for prefetch to logfile
+which fasterq-dump     #adds binary path for faster-dump to logfile
+which bowtie2         #adds binary path for bowtie2 to logfile
+which parallel         #adds binary path for parallel to logfile
+export TMPDIR=tmp     #creates tmp directory in home to avoid /tmp disc storage limit
+echo $TMPDIR            #adding path of tmp to logfile
+ls $TMPDIR            #adding contents of tmp directory to logfile
 
+#function to check that available storage is greater than 100GB, else, pause the addition of more downloads
 function chkdsk {
     local avl
     avl=$(df -BG . | awk 'NR==2 {print $4}' | tr -d 'G')
     if [ "$avl" -lt 100 ]; then
         echo "Delaying execution of $1 as only ${avl}GB available"
         while [ "$avl" -lt 100 ]; do
-            echo "Sleeping 10 minutes..."
-            sleep "10m"
+            echo "Sleeping 10 minutes..." 
+            sleep "10m"                #pause duration if disk is full
             avl=$(df -BG . | awk 'NR==2 {print $4}' | tr -d 'G')
         done
         echo "Resuming $1 as ${avl}GB now available"
     fi
 }
 
-export -f chkdsk
+export -f chkdsk #makes chkdsk function to other parts of the code
 
-# get fastq && align && delete fastq
+# extract fastq from SRA file && align && delete fastq after
 function align {
-    # Check if enough disk space is avl before starting job
+    # Check if enough disk space is available before starting job
     chkdsk "$1"
     
-    echo "Starting alignment for <>$1</>"
+    echo "Starting alignment for <>$1</>" #added statement to logfile
     
-    # Download compressed sra files
+    # Download compressed SRA files
     # No exists check required thanks to resume
+    # if bash script or download fails, resume flag will reuse already downloaded SRA files if not already aligned
     if prefetch "$1" --output-directory data/ \
     --verbose --progress --max-size 50G \
     --resume yes -L debug;
@@ -60,14 +62,14 @@ function align {
         exit 1
     fi
     
-    # Dump fastq files from sra
+    # extract fastq files from SRA
     # Skip if file already exists
     if [ ! -f "pairs/$1_1.fastq" ] && [ ! -f "pairs/$1_2.fastq" ]; then
         # Check if space available for extracting more fastq files
         chkdsk "$1"
         if fasterq-dump "data/$1/$1.sra" --outdir pairs/ --temp tmp/ \
-        --bufsize 50MB --curcache 500MB --mem 5000MB --threads 94 \
-        --progress --verbose --details --log-level debug;
+        --bufsize 50MB --curcache 500MB --mem 5000MB --threads 94 \ #RAM allocated to each core of 8 parallel jobs (40GB RAM total)
+        --progress --verbose --details --log-level debug; #added to logfile
         then
             echo "Extracted fastq files for $1"
         else

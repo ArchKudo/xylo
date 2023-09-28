@@ -1,4 +1,5 @@
 #! /bin/bash
+
 # Get first 5000 reads
 head -n 5000 ../data/ERR3201375.fastq >fivek.fastq
 # Fetch ecoli reference genome
@@ -14,11 +15,13 @@ samtools view -@ 12 --verbosity 100 -b aln.sam -o aln.bam
 
 # Sort the file
 samtools sort -m 512M --threads 12 --verbosity 100 -o sort.bam aln.bam
-# Dedup
+
+# Dedup the bam file
 java -jar ~/workplace/downloads/picard.jar MarkDuplicates \
 INPUT=sort.bam \
 OUTPUT=dedup.bam \
 METRICS_FILE=dedup.metrics
+
 # Add fake read-groups
 java -jar ~/workplace/downloads/picard.jar AddOrReplaceReadGroups \
 INPUT=dedup.bam \

@@ -10,7 +10,6 @@ cd xylo/
 sbatch scripts/aln.sh
 ```
 
-
 ## File structure
 
 - db/ - Contains the bowtie index for reference files, in git just for backup
@@ -18,7 +17,7 @@ sbatch scripts/aln.sh
 
 - scripts/aln.sh - The main workflow used for aligning reads in slurm
 - scripts/snpper.py - Stolen from gretel-test repository with breaking deprecated api fix
-- scripts/wf.sh - Snippets for adhoc data analysis
+- scripts/snippets.sh - Snippets for adhoc data analysis
 
 - .tool-versions - Required python version
 - requirements.dev - Required python developer dependencies

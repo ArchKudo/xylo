@@ -26,10 +26,6 @@ anaconda3-launch --env xylo3.7.16 pip install hanselx pysam PyVCF gretel
 sbatch scripts/recover.sh
 ```
 
-#### Local install
-
-```sh
-
 
 
 

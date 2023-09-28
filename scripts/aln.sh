@@ -12,6 +12,9 @@
 
 
 function setup {
+    # Check input arguments
+    echo "Using runs: $RUNS"
+    
     # Create required setup directories
     declare -a setup=(data pairs aln logs tmp)
     
@@ -57,6 +60,12 @@ function setup {
 # Explicityly make setup function available to other parts of the code
 export -f setup
 
+function build {
+    
+    echo "Building Bowtie2 index for $1"
+    bowtie2-build "$1" "db/${1%.*}"
+    
+}
 
 # Function to check that available storage is greater than 100GB,
 # else, pause the addition of more downloads
@@ -189,7 +198,53 @@ function main {
 export -f main
 
 
+function help {
+    echo "Usage: $0 [--runs <sra>] [--refs <fasta>]"
+    echo "  --runs <sra>: Newline delimited list of SRA run accessions (default: runs)"
+    echo "  --refs <fasta>: Reference nucleotide sequences in fasta format (default: xylo.fasta)"
+    exit 1
+}
+
+# Parse command-line arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --runs)
+            if [ -n "$2" ]; then
+                RUNS="$2"
+                shift 2
+            else
+                RUNS="runs"
+                shift
+            fi
+        ;;
+        --refs)
+            if [ -n "$2" ]; then
+                REFS="$2"
+                shift 2
+            else
+                shift
+            fi
+        ;;
+        *)
+            echo "Error: Invalid argument: $1"
+            help
+        ;;
+    esac
+done
+
+
+# Run setup
+setup
+
+# Build index file if --refs present and is a valid file
+if [ -n "$REFS" ] && [ -f "$REFS" ]; then
+    # Create a bowtie2-index
+    build "$REFS"
+fi
+
+
+
 # Start 8 parallel align task for the each run accession in ./runs file seperated by newline
 parallel --joblog "logs/parallel.$SLURM_JOB_ID" --tmpdir tmp/ \
 --compress --keep-order --group \
---retries 3 --jobs 8 --arg-file ./runs main
+--retries 3 --jobs 8 --arg-file ./"$RUNS" main

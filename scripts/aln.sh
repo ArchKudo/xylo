@@ -63,7 +63,7 @@ export -f setup
 function build {
     
     echo "Building Bowtie2 index for $1"
-    bowtie2-build "$1" "db/${1%.*}"
+    bowtie2-build "$1" "db/xylo"
     
 }
 

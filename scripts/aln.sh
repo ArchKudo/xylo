@@ -77,7 +77,9 @@ function chkdsk {
     # Get the disk space where the current directory is mounted
     # Get the 4th column of second line
     # Trim the G at the end
+    echo "Checking for available disk storage"
     avl=$(df -BG . | awk 'NR==2 {print $4}' | tr -d 'G')
+    echo "${avl}G storage space available"
     if [ "$avl" -lt 100 ]; then
         echo "Delaying execution of $1 as only ${avl}GB available"
         
@@ -204,6 +206,10 @@ function help {
     echo "  --refs <fasta>: Reference nucleotide sequences in fasta format (default: xylo.fasta)"
     exit 1
 }
+
+# Setup defaults
+RUNS=runs
+export RUNS
 
 # Parse command-line arguments
 while [[ $# -gt 0 ]]; do

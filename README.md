@@ -2,13 +2,39 @@
 
 ## Usage
 
+### Aligning files
+
 ```sh
 git clone git@github.com:ArchKudo/xylo.git
 
 cd xylo/
 
 sbatch scripts/aln.sh
+
+# bash scripts/aln.sh # locally
 ```
+
+### Recovering haplotypes
+
+
+#### On Slurm
+
+```sh
+# pyVCF anaconda version is broken better to run this locally instead without python
+anaconda3-launch conda create -n "xylo3.7.16" python=3.7.16
+anaconda3-launch --env xylo3.7.16 pip install hanselx pysam PyVCF gretel
+sbatch scripts/recover.sh
+```
+
+#### Local install
+
+```sh
+
+
+
+
+
+
 
 ## File structure
 

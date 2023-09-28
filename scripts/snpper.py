@@ -1,5 +1,9 @@
 """Given a BAM, a contig, and an ending genomic position, aggressively call for
-variants and generate a VCF."""
+variants and generate a VCF.
+Original author: SamStudio8
+License: Unknown
+Repository: https://github.com/SamStudio8/gretel-test/blob/master/snpper.py
+"""
 import sys
 
 import numpy as np

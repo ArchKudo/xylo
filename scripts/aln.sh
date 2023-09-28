@@ -10,50 +10,53 @@
 #SBATCH --partition=cpubig
 #SBATCH --ntasks=94
 
-# Create required setup directories
-declare -a setup=(data pairs aln logs tmp)
 
-# Create directories listed in setup array
-mkdir -p "${setup[@]}"
+function setup {
+    # Create required setup directories
+    declare -a setup=(data pairs aln logs tmp)
+    
+    # Create directories listed in setup array
+    mkdir -p "${setup[@]}"
+    
+    # Setup checks
+    # Add line of text to logfile to state which slurm node sbatch was run on
+    /bin/hostname
+    
+    # Add the bin directory from the repository to path
+    PATH="$(pwd)/bin:$PATH"
+    export PATH
+    
+    # Print the path to the log file
+    echo "$PATH"
+    # Add current directory to logfile
+    pwd
+    
+    # Add binary path for prefetch to logfile
+    which prefetch
+    
+    # Add binary path for faster-dump to logfile
+    which fasterq-dump
+    
+    # Add binary path for bowtie2 to logfile
+    which bowtie2
+    
+    # Add binary path for parallel to logfile
+    which parallel
+    
+    # Create tmp directory environmental variable
+    # Required for magicblast to avoid the 200G /tmp limit
+    export TMPDIR=tmp
+    
+    # Add path of tmp to logfile
+    echo $TMPDIR
+    
+    # Add contents of tmp directory to logfile
+    ls $TMPDIR
+}
 
-# Setup checks
+# Explicityly make setup function available to other parts of the code
+export -f setup
 
-# Add line of text to logfile to state which slurm node sbatch was run on
-/bin/hostname
-
-# Add the bin directory from the repository to path
-export PATH="$(pwd)/bin:$PATH"
-
-# Print the path to the log file
-echo "$PATH"
-
-
-
-
-# Add current directory to logfile
-pwd
-
-# Add binary path for prefetch to logfile
-which prefetch
-
-# Add binary path for faster-dump to logfile
-which fasterq-dump
-
-# Add binary path for bowtie2 to logfile
-which bowtie2
-
-# Add binary path for parallel to logfile
-which parallel
-
-# Create tmp directory environmental variable
-# Required for magicblast to avoid the 200G /tmp limit
-export TMPDIR=tmp
-
-# Add path of tmp to logfile
-echo $TMPDIR
-
-# Add contents of tmp directory to logfile
-ls $TMPDIR
 
 # Function to check that available storage is greater than 100GB,
 # else, pause the addition of more downloads
@@ -87,18 +90,8 @@ function chkdsk {
 # Explicityly make chkdsk function available to other parts of the code
 export -f chkdsk
 
-# Download SRA files,
-# Extract fastq from SRA file
-# Align them
-# If successful delete all artifacts
-function align {
-    
-    # Check if enough disk space is available before starting job
-    chkdsk "$1"
-    
-    # Add statement to logfile
-    echo "Starting alignment for <>$1</>"
-    
+# Download SRA files
+function download {
     # Download compressed SRA files
     # If remaining bash script or download fails,
     # resume flag will reuse already downloaded SRA files if not already aligned
@@ -110,7 +103,13 @@ function align {
         echo "Download failed for $1"
         exit 1
     fi
-    
+}
+
+# Explicitly make download function available to other parts of the code
+export -f download
+
+# Extract fastq from SRA file
+function extract {
     # Extract fastq files from SRA
     # Skip if file already exists
     if [ ! -f "pairs/$1_1.fastq" ] && [ ! -f "pairs/$1_2.fastq" ]; then
@@ -132,7 +131,13 @@ function align {
     else
         echo "Skipping extraction as file: $1_1.fastq & $1_2.fastq already exists"
     fi
-    
+}
+
+# Explicitly make extract function available to other parts of the code
+export -f extract
+
+# Align them
+function align {
     # Run bowtie2 on downloaded files
     # Check if both pairs exist
     if [ -f "pairs/$1_1.fastq" ] && [ -f "pairs/$1_2.fastq" ]; then
@@ -154,15 +159,37 @@ function align {
         echo "Incomplete pairs present for $1"
         exit 1
     fi
-    
-    echo "Finished alignment for $1"
-    
 }
 
 # Explicitly make align function available to other parts of the code
 export -f align
 
+# If successful delete all artifacts
+function main {
+    # Check if enough disk space is available before starting job
+    chkdsk "$1"
+    
+    # Add statement to logfile
+    echo "Starting alignment for <>$1</>"
+    
+    # Download the SRA file
+    download "$1"
+    
+    # Extract fastq
+    extract "$1"
+    
+    # Align
+    align "$1"
+    
+    echo "Finished alignment for $1"
+    
+}
+
+# Explicitly make main function available to other parts of the code
+export -f main
+
+
 # Start 8 parallel align task for the each run accession in ./runs file seperated by newline
 parallel --joblog "logs/parallel.$SLURM_JOB_ID" --tmpdir tmp/ \
 --compress --keep-order --group \
---retries 3 --jobs 8 --arg-file ./runs align
+--retries 3 --jobs 8 --arg-file ./runs main

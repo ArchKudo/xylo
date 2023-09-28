@@ -21,8 +21,14 @@ mkdir -p "${setup[@]}"
 # Add line of text to logfile to state which slurm node sbatch was run on
 /bin/hostname
 
-# Add all directories in PATH to logfile
+# Add the bin directory from the repository to path
+export PATH="$(pwd)/bin:$PATH"
+
+# Print the path to the log file
 echo "$PATH"
+
+
+
 
 # Add current directory to logfile
 pwd

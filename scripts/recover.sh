@@ -43,10 +43,14 @@ bcftools call --threads 12 -mv -Oz -o calls.vcf
 # Reperform variant calling using snpper
 # Get all gene contigs from the reference fasta file
 # Doesn't work in slurm due to PyVCF currently broken on Python3.7+ need to run this locally
-grep -o -E "^>[^ ]+" xylo.fasta | cut -c 2- | while read -r gene; do
+grep -o -E "^>[^ ]+" ../xylo.fasta | cut -c 2- | while read -r gene; do
+    # Create a directory for each gene for avoiding gretel overwriting output
+    mkdir -p "$gene"
     # Run snpper.py for each gene and save the output to a VCF file
-    anaconda3-launch --env xylo3.7.16 python ../scripts/snpper.py -b dedup.bam -r "$gene" > "$gene.vcf"
+    python ../scripts/snpper.py -b dedup.bam -r "$gene" > "$gene.vcf"
+    # Compress and index the vcf file
     bgzip -k -@ 16 "$gene.vcf"
     tabix "$gene.vcf.gz"
-    anaconda3-launch gretel dedup.bam "$gene.vcf.gz" "$gene" --master ../xylo.fasta
+    # Run gretel without boundaries for each vcf file
+    gretel dedup.bam "$gene.vcf.gz" "$gene" --master ../xylo.fasta -o "$gene"
 done
